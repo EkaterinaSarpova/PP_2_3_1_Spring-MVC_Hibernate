@@ -1,4 +1,5 @@
 package web.controller;
+import org.springframework.validation.BindingResult;
 import web.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import web.service.UserService;
+
+import javax.validation.Valid;
 
 
 @Controller
@@ -32,9 +35,13 @@ public class UsersController {
     }
 
     @PostMapping("/user-create")
-    public String createUser (User user) {
-        userService.addUser(user);
-        return "redirect:/users";
+    public String createUser (@Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "user-create";
+        } else {
+            userService.addUser(user);
+            return "redirect:/users";
+        }
     }
 
     @GetMapping("user-delete")
@@ -50,8 +57,12 @@ public class UsersController {
     }
 
     @PostMapping("/user-update")
-    public String updateUser (User user) {
-        userService.updateUser(user);
-        return "redirect:/users";
+    public String updateUser (@Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "user-update";
+        } else {
+            userService.updateUser(user);
+            return "redirect:/users";
+        }
     }
 }
